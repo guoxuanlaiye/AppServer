@@ -22,7 +22,8 @@ class Application(tornado.web.Application):
         initdb()
 
         handlers = url_wrapper([
-            (r'/users/', include('views.users.users_urls'))
+            (r'/users/', include('views.users.users_urls')),
+            (r'/upload/', include('views.upload.upload_urls'))
         ])
 
         settings = dict(
