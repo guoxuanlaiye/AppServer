@@ -54,3 +54,25 @@ class RegistHandle(tornado.web.RequestHandler):
             self.db.close()
             http_response(self, ERROR_CODE['0'], 0)
 
+
+class LoginHandle(tornado.web.RequestHandler):
+
+    @property
+    def db(self):
+        return self.application.db
+
+    def post(self):
+        try:
+            args = json_decode(self.request.body)
+            phone = args['phone']
+            print(args)
+        except:
+
+            http_response(self, ERROR_CODE['1001'], 1001)
+            return
+        ex_user = self.db.query(Users).filter(phone=phone).first()
+        if ex_user:
+            http_response(self, ERROR_CODE['0'], 0)
+        else:
+            http_response(self, ERROR_CODE['1003'], 1003)
+
