@@ -1,10 +1,15 @@
 import json
 import os
 
-def http_response(self, msg, code):
-    self.write(json.dumps({"data": {"msg": msg, "code": code}}))
+def http_response(self, msg, code, data=None):
+    
+    self.set_header("Access-Control-Allow-Origin", "*") # 这个地方可以写域名
+    self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+    self.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    self.write(json.dumps({"message": msg, "code": code, "data":data}))
 
 def save_files(file_metas, in_rel_path, type='image'):
+    
     file_path = ""
     file_name_list = []
     for meta in file_metas:
@@ -16,4 +21,5 @@ def save_files(file_metas, in_rel_path, type='image'):
     return file_name_list
 
 if __name__ == '__main__':
-    http_response()
+    pass
+    # http_response()

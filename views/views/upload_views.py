@@ -21,7 +21,7 @@ class UploadFileHandle(tornado.web.RequestHandler):
             http_response(self, ERROR_CODE['1001'], 1001)
             return
 
-        image_url = ""
+        # image_url = ""
         image_path_list = []
         if image_metas:
             # 获取当前的路径

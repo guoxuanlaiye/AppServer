@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from .users_views import (
+from ..views.users_views  import (
     RegistHandle,
     LoginHandle
 )

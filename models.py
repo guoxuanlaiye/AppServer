@@ -25,6 +25,8 @@ class Users(BaseDB):
 def initdb():
     BaseDB.metadata.create_all(engine)
 
+# 当前文件作为主函数文件入口是调用测试
 if __name__ == '__main__':
-    print("Initialize database.....")
-    initdb()
+    pass
+    # print("Initialize database.....")
+    # initdb()

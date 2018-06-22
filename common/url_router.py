@@ -6,6 +6,7 @@ def include(module):
     urls = getattr(res, 'urls', res)
     return urls
 
+
 def url_wrapper(urls):
     wrapper_list = []
     for url in urls:

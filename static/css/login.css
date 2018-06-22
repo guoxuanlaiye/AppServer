@@ -1,0 +1,6 @@
+.container-view {
+    width: 200px;
+    height: 190px;
+    display: inline-block;
+    background-color: brown;
+}

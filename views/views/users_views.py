@@ -23,56 +23,73 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 ########################################
 
-class RegistHandle(tornado.web.RequestHandler):
-
+class BaseHandle(tornado.web.RequestHandler):
+    
     @property
     def db(self):
-        return self.application.db
+        session = self.application.dbSession()
+        return session
+
+
+class RegistHandle(BaseHandle):
 
     def post(self):
         try:
             args = json_decode(self.request.body)
             name = args['name']
             phone = args['phone']
-            password = args['password']
+            password = args['psw']
             print(args)
         except:
             logger.info("RegistHandle: request arg incorrect")
             http_response(self, ERROR_CODE['1001'], 1001)
             return
 
-        ex_user = self.db.query(Users).filter_by(phone=phone).first()
+        ex_user = self.db.query(Users).filter(Users.phone==phone).first()
         if ex_user:
             http_response(self, ERROR_CODE['1002'], 1002)
             self.db.close()
             return
         else:
             create_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            add_user = Users(name, phone, password, create_time)
+            add_user = Users(name=name, phone=phone, password=password, createtime=create_time)
             self.db.add(add_user)
             self.db.commit()
             self.db.close()
             http_response(self, ERROR_CODE['0'], 0)
 
 
-class LoginHandle(tornado.web.RequestHandler):
+class LoginHandle(BaseHandle):
 
-    @property
-    def db(self):
-        return self.application.db
 
+    def get(self):
+        self.render("user/login.html")
+    
     def post(self):
         try:
             args = json_decode(self.request.body)
             phone = args['phone']
-            print(args)
+            psw = args['psw']
+            print("args = %s" % args)
         except:
-
             http_response(self, ERROR_CODE['1001'], 1001)
             return
-        ex_user = self.db.query(Users).filter(phone=phone).first()
-        if ex_user:
-            http_response(self, ERROR_CODE['0'], 0)
+        
+        if phone:
+            ex_user = self.db.query(Users).filter(Users.phone==phone).first()
+            print("ex_user = %s, type = %s"%(ex_user, type(ex_user)))
+            if ex_user:
+                if ex_user.password == psw:
+                    # 密码正确，登录成功
+                    http_response(self, ERROR_CODE['0'], 0)
+                else:
+                    # 密码错误
+                    http_response(self, ERROR_CODE['1004'], 1004)
+            else:
+                # 用户未注册
+                http_response(self, ERROR_CODE['1003'], 1003)
         else:
-            http_response(self, ERROR_CODE['1003'], 1003)
+            # 参数非法
+            http_response(self, ERROR_CODE['1001'], 1001)
+
 
